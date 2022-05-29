@@ -25,3 +25,23 @@ jobs:
         name: app
         path: app/build/outputs/apk/debug/app-debug.apk
      
+  distribute:
+    
+    needs: [ build ]
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download APK
+      uses: actions/download-artifact@v2.0.5
+      id: download
+      with:
+        name: app
+        path: ./
+    - name: Distribute to App Center
+      uses: wzieba/AppCenter-Github-Action@v1.2.1
+      with:
+        appName: LearnProgrammingAcademy/My-Investments
+        token: ${{secrets.APP_CENTER_TOKEN}}
+        group: Beta Testers
+        file: ${{steps.download.outputs.download-path}}/app-debug.apk
+        notifyTesters: yes
